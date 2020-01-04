@@ -76,7 +76,11 @@ ZEND_API zend_op_array *pm9screw_compile_file(zend_file_handle *file_handle, int
 {
   FILE  *fp;
   char  fname[32];
-
+  
+  if (!file_handle || !file_handle->filename || strstr(file_handle->filename, ".phar") || strstr(file_handle->filename, "phar://")) {
+   return org_compile_file(file_handle, type);
+  }
+  
   memset(fname, 0, sizeof fname);
   if (zend_is_executing(TSRMLS_C)) {
     if (get_active_function_name(TSRMLS_C)) {
@@ -129,6 +133,7 @@ PHP_MINFO_FUNCTION(php_screw_plus)
 {
   php_info_print_table_start();
   php_info_print_table_header(2, "php_screw_plus support", "enabled");
+  php_info_print_table_header(2, "php_screw_plus version", "0.11");
   php_info_print_table_end();
 }
 
